@@ -1,0 +1,163 @@
+# -*- coding: utf-8 -*-
+# this file is released under public domain and you can use without limitations
+
+#########################################################################
+## This is a sample controller
+## - index is the default action of any application
+## - user is required for authentication and authorization
+## - download is for downloading files uploaded in the db (does streaming)
+#########################################################################
+
+def index():
+    """
+    example action using the internationalization operator T and flash
+    rendered by views/default/index.html or views/generic.html
+
+    if you need a simple wiki simply replace the two lines below with:
+    return auth.wiki()
+    """
+    response.flash = T("Welcome to Movie World ")
+    if auth.is_logged_in():
+        #response.flash = T(str(auth.user.id))
+        response.view='default/logged_index.html'
+        return dict(rows=db(db.movie_suggested.user_id==auth.user.id).select())
+ 
+    else:
+        response.view='default/index.html'
+        return dict(rows=T("not logged in"))
+@auth.requires_login()  
+def fullmovie():
+    m=int(request.args[0])
+    s=request.args[1]
+    z=db((db.movie_watched.user_id==auth.user.id)&(db.movie_watched.mid==m)).select()
+    if (z):
+        pass
+        
+    else:
+        db.movie_watched.insert(user_id=auth.user.id,mid=m)
+    x=(db(db.movie.mid==m).select(db.movie.link_movie))[0]
+# #     s = f.read()
+    redirect(x.link_movie)
+   
+def user():
+    """
+    exposes:
+    http://..../[app]/default/user/login
+    http://..../[app]/default/user/logout
+    http://..../[app]/default/user/register
+    http://..../[app]/default/user/profile
+    http://..../[app]/default/user/retrieve_password
+    http://..../[app]/default/user/change_password
+    http://..../[app]/default/user/manage_users (requires membership in
+    http://..../[app]/default/user/bulk_register
+    use @auth.requires_login()
+        @auth.requires_membership('group name')
+        @auth.requires_permission('read','table name',record_id)
+    to decorate functions that need access control
+    """
+    return dict(form=auth())
+@auth.requires_login()
+def ratingbar():
+    k=int(request.vars.hiddn)
+    m=int(request.args(0));
+#     return dict(rows=m)
+    r=db(db.movie.mid==m).select();
+    for row in r:
+        rate=round(row.rating,1);    
+        cnt=row.votecount;
+    
+    avg=round(((rate*cnt)+k)/(cnt+1),1);
+    cnt=cnt+1;
+    db(db.movie.mid==m).update(rating=avg);
+    db(db.movie.mid==m).update(votecount=cnt);
+    return dict(rows=m) 
+@cache.action()
+def download():
+    """
+    allows downloading of uploaded files
+    http://..../[app]/default/download/[filename]
+    """
+    return response.download(request, db)
+
+
+def call():
+    """
+    exposes services. for example:
+    http://..../[app]/default/call/jsonrpc
+    decorate with @services.jsonrpc the functions to expose
+    supports xml, json, xmlrpc, jsonrpc, amfrpc, rss, csv
+    """
+    return service()
+def movie_details():
+    x=request.args[0]
+    return dict(rows = db(db.movie.mid==x).select())
+# def movie_details():
+#    x=request.args[0]
+#    return dict(rows = db(db.movie.mid==x).select())
+def addrow():
+    values=request.vars.a
+    m=request.args[0]
+    f=1
+    for i in values:
+        if(db.movie_suggested.insert(user_id=i,mid=m,frnd_suggested=auth.user.id))<0:
+            f=0
+    if f==0:
+        response.flash=T('Insert failed')
+    else:
+        response.flash=T('Succesfully inserted')
+
+    
+def insert_suggest():
+    values=request.vars.a
+    m=request.args[0]
+    f=1
+    for i in values:
+        if(db((db.movie_suggested.user_id==i)&(db.movie_suggested.mid==m)).select()):
+            pass
+        else:
+            if(db.movie_suggested.insert(user_id=i,mid=m,frnd_suggested=auth.user.id))<0:
+                f=0
+    if f==0:
+        response.flash=T('Insert failed')
+    else:
+        response.flash=T('Suggestions posted succesfully :)')
+    return dict(rows=m)
+    
+def movies_genres():
+    x=request.args[0]
+    return dict(rows = db(db.movie.genre==x).select())
+
+def search():
+    keyword=request.vars.keyword;
+  
+    
+    return dict(rows=db(db.movie.moviename.contains(keyword)|db.movie.genre.contains(keyword)|db.movie.actor1.contains(keyword)|db.movie.actor2.contains(keyword)|db.movie.actor3.contains(keyword)|db.movie.actor4.contains(keyword)|db.movie.actor5.contains(keyword)).select())
+
+@auth.requires_login()
+def suggest():
+    m=int(request.args[0])
+    all_users=db(db.auth_user).select(db.auth_user.id)
+    users_watched=db(db.movie_watched.mid==m).select(db.movie_watched.user_id)
+    watched_list=[]
+    for user in users_watched:
+        watched_list.append(user.user_id)
+    all_list=[]
+    for user in all_users:
+        all_list.append(user.id)
+    check=db((db.movie_watched.user_id==auth.user.id)&(db.movie_watched.mid==m)).select()
+    not_list=[]
+    if len(check)>0:
+        not_list=list(set(all_list)-set(watched_list))
+        return dict(rows=not_list)
+    else:
+        response.flash=T('You have not watched the movie')
+        return dict(rows=[])
+        #return dict(rows=not_list,row1=all_list,row2=watched_list)
+        
+#         not_list.append("5")
+        pass
+        #pass
+         #not_list=list(set(all_list)-set(watched_list))
+#     users_names=[]
+#     for userid in not_list:
+#         users_names.append(db(db.auth_user.id==userid).select(db.auth_user.first_name))

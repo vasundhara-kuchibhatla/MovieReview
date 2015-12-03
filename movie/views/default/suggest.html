@@ -1,0 +1,55 @@
+{{extend 'layout.html'}}
+<script>
+    function goback()
+    {
+         window.history.back();
+    }
+    
+</script>
+{{m=request.args[0]}}
+{{if len(rows)>0:}}
+<h2 style="color:green">Suggest to friends who didnot watch it yet !
+  
+</h2>
+
+<br/>  <br/>
+<form id="suggest_ins" action="{{=URL('movie','default','insert_suggest',args=[m])}}">
+    
+
+     <div class="multiselect" >
+    <fieldset>
+
+        <legend>
+            Select friends:
+        </legend>
+    {{for row in rows:}}
+       {{  user=db(db.auth_user.id==row).select()}}
+
+      <input name="a" type="checkbox" value="{{=row}}" >{{=user[0].first_name}}</input><br/>
+      {{pass}}
+
+
+
+    </div>
+        <br/>  <br/>
+        <input type="submit" value="Suggest">
+</form>
+ </fieldset>
+ {{else:}}
+    <h2>
+      Oops!You need to watch the movie before suggesting   
+        
+        <form action="{{=URL('movie','default','movie_details',args=[m])}}">
+            
+           
+                 <input type="submit" value="Go Back"/>
+                     
+                     
+            
+             
+                 
+                 </form>
+       
+</h2>
+     {{pass}}
+{{pass}}

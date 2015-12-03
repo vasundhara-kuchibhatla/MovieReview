@@ -1,0 +1,43 @@
+{{extend 'layout.html'}}
+{{block header}}
+    <header class="container-fluid background">
+      <div class="jumbotron text-center">
+        {{if response.title:}}
+       <h1>
+{{=response.title}}
+          </h1>      
+        </div>
+</header>
+          
+      {{end}}
+           {{pass}}
+
+
+<h2>
+    Suggested Videos for you:
+</h2><br/>
+{{for row in rows:}}
+{{x=db(db.movie.mid==row.mid).select()}}
+{{for item in x:}}
+<div id="stamp">
+    <a href={{=URL('movie', 'default', 'movie_details',args=[item.mid])}}><img id="stamp_poster" src="{{=URL('default', 'download', args=item.poster)}}" alt="No poster" ></img></a>
+</div>
+
+<div id="kk">
+   {{x=(db(db.auth_user.id==row.frnd_suggested).select(db.auth_user.first_name))[0]}}
+
+   <div style="float:left;height:25px;">
+       
+     <a href={{=URL('movie', 'default', 'movie_details',args=[item.mid])}}><span style="font-size:20px"><b>{{=item.moviename}}</b></span></a></div><br/>
+    <div style="float:right;height:25px;position:relative;bottom:30px">
+        <b>Suggested by: </b><span style="color:#b30086;font-size:18px"><i>{{=x.first_name}}</i></span>
+</div>
+    
+<div style="clear:right;margin-top:30px"><b>Plot:</b>{{=item.description}}</div>
+    
+
+    </div>
+<hr/>
+{{pass}}
+{{pass}}
+ {{pass}}

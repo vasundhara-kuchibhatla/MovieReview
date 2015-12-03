@@ -1,0 +1,40 @@
+{{extend 'layout.html'}}
+
+{{block header}}
+    <header class="container-fluid background">
+      <div class="jumbotron text-center">
+        {{if response.title:}}
+       <h1>
+{{=response.title}}
+          </h1>      
+        </div>
+</header>
+          
+      {{end}}
+           {{pass}}
+{{l=['Animation','Comedy','Fantasy','Horror','Romance']}}
+{{for genre in l:}}
+
+{{rows=db(db.movie.genre==genre).select(db.movie.mid,db.movie.poster,db.movie.moviename,orderby=~db.movie.rating,limitby=(0,2))}}
+{{if len(rows)>0:}}
+<h3>Genre:<span id="genre_name" link="maroon"><a  href="{{=URL('movie', 'default', 'movies_genres',args=[genre])}}">{{=genre}}</a></span></h3>
+{{for row in rows:}}
+{{x=db(db.movie.mid==row.mid).select()}}
+{{for item in x:}}
+<div id="stamp">
+    <a href={{=URL('movie', 'default', 'movie_details',args=[item.mid])}}><img id="stamp_poster" src="{{=URL('default', 'download', args=item.poster)}}" alt="No poster" ></img></a>
+</div>
+
+<div id="kk">
+   
+
+<a href={{=URL('movie', 'default', 'movie_details',args=[item.mid])}}>{{=item.moviename}}</a><br/><br/>
+<b>Plot:</b>{{=item.description}}
+<br/>
+    </div>
+<hr/>
+{{pass}}
+{{pass}}
+ {{pass}}
+
+  {{  pass}}

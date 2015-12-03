@@ -1,0 +1,145 @@
+{{extend 'layout.html'}}
+ 
+
+
+<script>
+    function func()
+    {
+        
+    }
+function myFunction() {
+    var x = document.getElementsByName("rating-input-1");
+    
+    for(var j=0;j<x.length;j++)
+            if(x[j].checked){
+              // alert(x[j].value);
+             //   alert(y);
+                document.getElementById("hiddn").value = x[j].value;
+              // alert(document.getElementById("hiddn").value);
+//                 return x[j].value;
+            }    
+}
+ 
+    
+</script>
+	
+	 
+	
+	
+				
+	
+<p id="demo"></p>
+<div id="full">
+
+{{for item in rows:}}
+   <h1>
+        {{=item.moviename}}
+</h1>
+ <br/>
+
+
+
+
+
+	
+
+ 
+<div id="left" width="100%">
+     <img id="img_poster" src="{{=URL('default', 'download', args=item.poster)}}" />
+    
+        
+    
+</div>
+   <div id="right">
+       <div id="rating_div">
+               <div id="srating" ><label id="rating" value="abds">{{=item.rating}}</label><br/><br/></div>
+           
+               <div id="give_rating">
+                   <br/>
+               
+                <span class="rating">
+                        <input type="radio" class="rating-input"
+                    id="rating-input-1-5" name="rating-input-1" value="5" onchange="myFunction()"/>
+                        <label for="rating-input-1-5" class="rating-star"></label>
+                        <input type="radio" class="rating-input"
+                                id="rating-input-1-4" name="rating-input-1" value="4" onchange="myFunction()"/>
+                        <label for="rating-input-1-4" class="rating-star"></label>
+                        <input type="radio" class="rating-input" value="3"
+                                id="rating-input-1-3" name="rating-input-1" onchange="myFunction()"/>
+                        <label for="rating-input-1-3" class="rating-star"></label>
+                        <input type="radio" class="rating-input" value="2"
+                                id="rating-input-1-2" name="rating-input-1" onchange="myFunction()"/>
+                        <label for="rating-input-1-2" class="rating-star"></label>
+                        <input type="radio" class="rating-input" value="1"
+                                id="rating-input-1-1" name="rating-input-1" onchange="myFunction()" />
+                        <label for="rating-input-1-1" class="rating-star"></label>
+                </span>
+
+                    <form id="ratingbar" action="{{=URL('movie','default', 'ratingbar',args=[item.mid])}}" >
+                   <input type="hidden" name="hiddn" id="hiddn"/> 
+                        
+                 <input type="submit" value='Rate' width="30px"/>
+             
+                 
+                 </form>
+    
+            
+               </div>
+           
+       </div>
+      
+       <div id="details">
+           <span style=";margin-left:17%">
+               /{{=item.votecount}}(users voted)
+                </span>
+            <br/>
+       <b>Genre:</b>{{=item.genre}}<br/><br/>
+           
+       <b>Actors:</b><a href="{{=(db(db.actor_wikipage.actor==item.actor1).select())[0].link}}">{{=item.actor1}}</a>,<a href="{{=(db(db.actor_wikipage.actor==item.actor2).select())[0].link}}" >{{=item.actor2}}</a>,<a href="{{=(db(db.actor_wikipage.actor==item.actor3).select())[0].link}}" >{{=item.actor3}}</a>,<a href="{{=(db(db.actor_wikipage.actor==item.actor4).select())[0].link}}" >{{=item.actor4}}</a>,<a href="{{=(db(db.actor_wikipage.actor==item.actor5).select())[0].link}}">{{=item.actor5}}</a>
+       <br/><br/>
+       <b>Director:</b>{{=item.director}}
+       <br/><br/>
+       <b>Music:</b>{{=item.music}}<br/><br/>
+         
+       <b>Plot:</b>{{=item.description}}<br/><br/>
+         <form id="fullmovie" action="{{=URL('movie','default', 'fullmovie',args=[item.mid,item.link_movie])}}" >
+                 <input type="submit" value='Watch full movie' width="30px"/>
+             
+                 
+                 </form>
+         
+
+        </div>
+    </div>
+
+    <br />
+   {{pass}}
+
+</div>
+<div style="clear:both">
+    
+    <div id="thum" style="float:left;margin-top:5%;width=30%">
+         <form id="fullmovie" action="{{=URL('movie','default', 'suggest',args=[item.mid])}}" >
+             <span style="font-family:Comic sans MS;font-size:20px">
+                 &nbsp; Like the movie?<br/>
+            &nbsp; Hit the button to suggest your friends<br/><br/>
+             </span>
+                   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--> &nbsp; &nbsp; <input id="suggest_img" type="submit" value='' width="30px"/>
+
+
+                     </form>
+    </div>
+    <div style="float:right;width=70%;margin-right:10%;margin-bottom:2%">
+        <br/><br/><br/>
+    <iframe id="trailer" src="{{=item.url}}" width="600px" height="360px" 
+        frameborder="0" allowfullscreen></iframe>
+    </div>
+   <br/><br/> 
+
+</div>
+</div>
+<div>
+    <br/>
+    <br/>&nbsp;
+</div>
+</div>

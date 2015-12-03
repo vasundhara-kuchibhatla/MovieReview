@@ -1,0 +1,14 @@
+{{extend 'layout.html'}}
+
+
+<h2>
+    Your suggestion invites have been sent successfully!
+    
+</h2>
+<form  action="{{=URL('movie','default', 'movie_details',args=[int(request.args[0]))}}" >
+                   
+                        
+                 <input type="submit" value='Go to Movie Page!' width="30px"/>
+             
+                 
+                 </form>

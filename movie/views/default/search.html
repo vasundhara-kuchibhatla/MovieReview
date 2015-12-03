@@ -1,0 +1,19 @@
+{{extend 'layout.html'}}
+<h1>Search Results:</h1>
+
+
+{{for item in rows:}}
+<div id="stamp">
+    <a href="{{=URL('movie', 'default', 'movie_details',args=[item.mid])}}"><img id="stamp_poster" src="{{=URL('default', 'download', args=item.poster)}}" alt="No poster" ></img></a>
+</div>
+
+<div id="kk">
+    
+
+<a href="{{=URL('movie', 'default', 'movie_details',args=[item.mid])}}">{{=item.moviename}}</a><br/>
+    <b>Genre:</b>{{=item.genre}}<br/>
+<b>Plot:&nbsp;</b>{{=item.description}}
+<br/>
+    </div>
+<hr/>
+{{pass}}

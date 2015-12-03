@@ -1,0 +1,104 @@
+{{extend 'layout.html'}}
+ 
+
+
+<script>
+function myFunction() {
+    var x = document.getElementsByName("rating-input-1");
+    
+    for(var j=0;j<x.length;j++)
+            if(x[j].checked){
+              // alert(x[j].value);
+             //   alert(y);
+                document.getElementById("hiddn").value = x[j].value;
+              // alert(document.getElementById("hiddn").value);
+//                 return x[j].value;
+            }    
+}
+
+    
+</script>
+	
+	 
+	
+	
+				
+	
+<p id="demo"></p>
+<div id="full">
+
+{{for item in rows:}}
+   <h1>
+        {{=item.moviename}}
+</h1>
+ <br/>
+
+
+
+
+
+	
+
+ 
+<div id="left" width="100%">
+     <img id="img_poster" src="{{=URL('default', 'download', args=item.poster)}}" />
+</div>
+   <div id="right">
+       <div id="rating_div">
+               <div id="srating" ><label id="rating" value="abds">{{=item.rating}}</label><br/><br/></div>
+               <div id="give_rating">
+                   <br/>
+               
+                <span class="rating">
+                        <input type="radio" class="rating-input"
+                    id="rating-input-1-5" name="rating-input-1" value="5" onchange="myFunction()"/>
+                        <label for="rating-input-1-5" class="rating-star"></label>
+                        <input type="radio" class="rating-input"
+                                id="rating-input-1-4" name="rating-input-1" value="4" onchange="myFunction()"/>
+                        <label for="rating-input-1-4" class="rating-star"></label>
+                        <input type="radio" class="rating-input" value="3"
+                                id="rating-input-1-3" name="rating-input-1" onchange="myFunction()"/>
+                        <label for="rating-input-1-3" class="rating-star"></label>
+                        <input type="radio" class="rating-input" value="2"
+                                id="rating-input-1-2" name="rating-input-1" onchange="myFunction()"/>
+                        <label for="rating-input-1-2" class="rating-star"></label>
+                        <input type="radio" class="rating-input" value="1"
+                                id="rating-input-1-1" name="rating-input-1" onchange="myFunction()" />
+                        <label for="rating-input-1-1" class="rating-star"></label>
+                </span>
+
+                    <form id="ratingbar" action="{{=URL('movie','default', 'ratingbar',args=[item.mid])}}" >
+                   <input type="hidden" name="hiddn" id="hiddn"/> 
+                        
+                 <input id="submit_img" type="submit" value=' ' width="30px"/>
+             
+                 
+                 </form>
+
+            
+               </div>
+       </div>
+      
+       <div id="details">
+            <br/>
+       <b>Genre:</b>{{=item.genre}}<br/><br/>
+       <b>Actors:</b>{{=item.actor1}},{{=item.actor2}},{{=item.actor3}},{{=item.actor4}},{{=item.actor5}}
+       <br/><br/>
+       <b>Director:</b>{{=item.director}}
+       <br/><br/>
+       <b>Music:</b>{{=item.music}}<br/><br/>
+         
+       <b>Plot:</b>{{=item.description}}<br/><br/>
+           <a href="{{=item.link_movie}}">Click here to watch the movie</a>
+<!--             <label id="link_movie">{{=item.link_movie}}</label> -->
+        </div>
+    </div>
+
+    <br />
+
+    {{pass}}
+    </div>
+
+
+<iframe id="trailer" src="{{=item.url}}" width="60%" height="360px" 
+    frameborder="0" allowfullscreen></iframe>

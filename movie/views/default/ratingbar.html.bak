@@ -1,0 +1,2 @@
+{{redirect(URL('movie','default','movie_details',args=row))}}
+{{pass}}
